@@ -35,6 +35,10 @@ const initializeHackerNewsPosts = async () => {
   db.collection('hn').find().toArray((err, results) => {
     // TODO - Add additional check for refilling hacker news posts
     // ^ based on last time refilled?
+    if (err) {
+      console.log(`Error: ${err}`);
+      throw err;
+    }
 
     if (results.length === 0 ) {
       getHackerNewsPosts()
