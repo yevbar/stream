@@ -1,0 +1,86 @@
+$body-color: red;
+
+body {
+  color: $body-color;
+}
+
+#header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.tweets-loading-rendered, .hacker-news-loading-rendered {
+  opacity: 0.33;
+}
+
+.tweets-loading-pending, .hacker-news-loading-pending {
+  opacity: 0.5;
+}
+
+.tweets-loading-success, .hacker-news-loading-success {
+  opacity: 1;
+}
+
+/* Source: https://stackoverflow.com/a/23985078 */
+@keyframes flickerAnimation {
+  0%   { opacity:1; }
+  50%  { opacity:0.1; }
+  100% { opacity:1; }
+}
+@-o-keyframes flickerAnimation{
+  0%   { opacity:1; }
+  50%  { opacity:0.1; }
+  100% { opacity:1; }
+}
+@-moz-keyframes flickerAnimation{
+  0%   { opacity:1; }
+  50%  { opacity:0.1; }
+  100% { opacity:1; }
+}
+@-webkit-keyframes flickerAnimation{
+  0%   { opacity:1; }
+  50%  { opacity:0.1; }
+  100% { opacity:1; }
+}
+
+.tweets-loading-error, .hacker-news-loading-error {
+ -webkit-animation: flickerAnimation 2s infinite;
+ -moz-animation: flickerAnimation 2s infinite;
+ -o-animation: flickerAnimation 2s infinite;
+  animation: flickerAnimation 2s infinite;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  max-width: 800px;
+  margin: 10px auto 10px auto;
+  box-shadow: 0 2px 10px 2px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  padding: 5px;
+
+  div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 5px;
+  }
+
+  svg {
+    margin: 5px;
+  }
+  
+  a {
+    color: black;
+    text-decoration: none;
+  }
+
+  &:hover {
+    transform: scale(1.1);
+  }
+}
