@@ -50,4 +50,28 @@ export function fetchTwitterFailure(error) {
   }
 }
 
-// TODO - ProductHunt related actions
+// Lobsters related actions
+
+export const FETCH_LOBSTERS_PENDING = 'FETCH_LOBSTERS_PENDING';
+export const FETCH_LOBSTERS_SUCCESS = 'FETCH_LOBSTERS_SUCCESS';
+export const FETCH_LOBSTERS_FAILURE = 'FETCH_LOBSTERS_FAILURE';
+
+export function fetchLobstersPending() {
+  return {
+    type: FETCH_LOBSTERS_PENDING
+  }
+}
+
+export function fetchLobstersSuccess(posts) {
+  return {
+    type: FETCH_LOBSTERS_SUCCESS,
+    payload: posts
+  }
+}
+
+export function fetchLobstersFailure(error) {
+  return {
+    type: FETCH_LOBSTERS_FAILURE,
+    error: error
+  }
+}

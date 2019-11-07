@@ -1,5 +1,6 @@
 const axios = require('axios');
 const bodyParser = require('body-parser');
+const cheerio = require('cheerio');
 const cors = require('cors');
 const express = require('express');
 const path = require('path');
@@ -45,10 +46,8 @@ const initializeHackerNewsPosts = async () => {
         .then(hn => {
           db.collection('hn').insertMany(hn, (err, results) => {
             if (err) {
-              return { error: err }
+              throw err
             }
-            
-            return hn;
           });
         });
     }
@@ -71,13 +70,46 @@ const initializeTweets = async () => {
     if (results.length === 0) {
       getTweets()
         .then(tweets => {
-          console.log('we got dem tweets');
           db.collection('tweets').insertMany(tweets, (err, results) => {
             if (err) {
-              return { error: err }
+              throw err
             }
-            
-            return tweets;
+          });
+        });
+    }
+  });
+}
+
+const getLobsters = async () => {
+  return axios.get('https://lobste.rs')
+    .then(({ data }) => {
+      const $ = cheerio.load(data);
+      let postList = [];
+      $('li > div > div.details > span > a').each((i, elem) => {
+        let url = $(elem).attr('href');
+        url = (url.substring(0,4) === 'http') ? url : `https://lobste.rs${url}`;
+        const title = $(elem).text();
+
+        postList[i] = {
+          title: title,
+          url: url,
+          // So we can filter on frontend
+          lobsters: true
+      }});
+      postList = postList.filter(post => post != undefined);
+      return postList;
+    });
+}
+
+const initializeLobsters = async () => {
+  db.collection('lobsters').find().toArray((err, results) => {
+    if (results.length === 0) {
+      getLobsters()
+        .then(posts => {
+          db.collection('lobsters').insertMany(posts, (err, results) => {
+            if (err) {
+              throw err;
+            }
           });
         });
     }
@@ -108,6 +140,18 @@ app.get('/api/twitter', async (req, res) => {
   });
 });
 
+app.get('/api/lobsters', async (req, res) => {
+  db.collection('lobsters').find().toArray((err, results) => {
+    if (err) {
+      res.json({
+        error: err
+      });
+    }
+
+    res.json(results);
+  });
+});
+
 const MONGO_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/';
 const MONGO_DB = process.env.MONGODB_URI ? process.env.MONGODB_URI.substring(process.env.MONGODB_URI.lastIndexOf('/')+1) : 'myDatabase';
 MongoClient.connect(MONGO_URI, async (err, client) => {
@@ -121,7 +165,11 @@ MongoClient.connect(MONGO_URI, async (err, client) => {
 
   console.log('Getting tweets')
   await initializeTweets();
-  console.log("Successfully got tweets");
+  console.log("Successfully retrieved tweets");
+
+  console.log('Getting lobsters');
+  await initializeLobsters();
+  console.log('Successfully retrieved lobsters posts');
 
   const port = process.env.PORT || 3000;
   app.listen(port, () => console.log(`We're listening on port: ${port}`));

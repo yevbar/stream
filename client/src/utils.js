@@ -11,6 +11,10 @@ export const isTweet = (item) => {
   return item.hasOwnProperty('retweeted_status') || item.hasOwnProperty('retweet_count')
 }
 
+export const isLobsters = (item) => {
+  return item.lobsters
+}
+
 export const getText = (item) => {
   if (isTweet(item)) {
     return item.text
