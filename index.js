@@ -96,7 +96,7 @@ const getLobsters = async () => {
           // So we can filter on frontend
           lobsters: true
       }});
-      postList = postList.filter(post => post != undefined);
+      postList = postList.filter(post => post != undefined && post.title.indexOf(' ') !== -1);
       return postList;
     });
 }
