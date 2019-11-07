@@ -106,6 +106,7 @@ app.get('/api/twitter', async (req, res) => {
 
 const MONGO_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/';
 MongoClient.connect(MONGO_URI, async (err, client) => {
+  console.log(`Connected to mongo instance at ${MONGO_URI}`);
   db = client.db('myDatabase');
 
   console.log("Getting hacker news posts");
